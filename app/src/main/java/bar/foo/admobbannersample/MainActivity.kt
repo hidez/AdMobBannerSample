@@ -2,6 +2,7 @@ package bar.foo.admobbannersample
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.widget.FrameLayout
 import com.google.android.gms.ads.*
 
@@ -19,6 +20,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     //region ADMOB
+
+    /** width of ad banner */
+    private val adSize: AdSize
+        get() {
+            val display = windowManager.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display.getMetrics(outMetrics)
+
+            //val density = outMetrics.density
+            //var adWidthPixels = adViewContainer.width.toFloat()
+            //if (adWidthPixels == 0.0f) {
+            //    adWidthPixels = outMetrics.widthPixels.toFloat()
+            //}
+            //val adWidth = (adWidthPixels / density).toInt()
+
+            val density = outMetrics.density
+            val adWidthPixels = outMetrics.widthPixels
+            val adWidth = (adWidthPixels / density).toInt()
+
+            return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this@MainActivity, adWidth)
+        }
 
     /**
      * initialize AdMob banner
@@ -64,7 +86,7 @@ class MainActivity : AppCompatActivity() {
      */
     private fun loadAdMob() {
         var request = AdRequest.Builder().build()
-        admobmAdView.adSize = AdSize.BANNER
+        admobmAdView.adSize = adSize
         admobmAdView.loadAd(request)
     }
 
